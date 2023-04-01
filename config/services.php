@@ -44,5 +44,12 @@ return [
         'client_secret' => '1bf13c2faf680f4ae2b97bdafa92c7d2', //Facebook Secret
         'redirect' => 'http://localhost:8000/login/facebook/callback',
      ],
+     'faspay' => [
+        'merchant_id' => env('FP_PROD_MERCHANT_ID'),
+        'merchant_name' => env('FP_PROD_MERCHANT_NAME'),
+        'user_id' => env('FP_PROD_USER_ID'),
+        'password' => env('FP_PROD_PASSWORD'),
+        'redirect_url' => env('FP_PROD_REDIRECT_URL'),
+    ],
 
 ];
