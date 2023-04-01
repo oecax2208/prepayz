@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +23,8 @@ Route::get('user/logout','FrontendController@logout')->name('user.logout');
 Route::get('user/register','FrontendController@register')->name('register.form');
 Route::post('user/register','FrontendController@registerSubmit')->name('register.submit');
 // Reset password
-Route::post('password-reset', 'FrontendController@showResetForm')->name('password.reset'); 
-// Socialite 
+Route::post('password-reset', 'FrontendController@showResetForm')->name('password.reset');
+// Socialite
 Route::get('login/{provider}/', 'Auth\LoginController@redirect')->name('login.redirect');
 Route::get('login/{provider}/callback/', 'Auth\LoginController@Callback')->name('login.callback');
 
@@ -44,6 +45,11 @@ Route::get('/add-to-cart/{slug}','CartController@addToCart')->name('add-to-cart'
 Route::post('/add-to-cart','CartController@singleAddToCart')->name('single-add-to-cart')->middleware('user');
 Route::get('cart-delete/{id}','CartController@cartDelete')->name('cart-delete');
 Route::post('cart-update','CartController@cartUpdate')->name('cart.update');
+
+// Quick checkout
+Route::get('quick-checkout/{product_detail}','FrontendController@quickCheckout')->name('quick.checkout');
+Route::post('quick-checkout/{id}','FrontendController@paymentFaspay')->name('quick.checkout.process');
+
 
 Route::get('/cart',function(){
     return view('frontend.pages.cart');
@@ -80,7 +86,7 @@ Route::post('/subscribe','FrontendController@subscribe')->name('subscribe');
 Route::resource('/review','ProductReviewController');
 Route::post('product/{slug}/review','ProductReviewController@store')->name('review.store');
 
-// Post Comment 
+// Post Comment
 Route::post('post/{slug}/comment','PostCommentController@store')->name('post-comment.store');
 Route::resource('/comment','PostCommentController');
 // Coupon
@@ -167,13 +173,13 @@ Route::group(['prefix'=>'/user','middleware'=>['user']],function(){
     Route::delete('/user-review/delete/{id}','HomeController@productReviewDelete')->name('user.productreview.delete');
     Route::get('/user-review/edit/{id}','HomeController@productReviewEdit')->name('user.productreview.edit');
     Route::patch('/user-review/update/{id}','HomeController@productReviewUpdate')->name('user.productreview.update');
-    
+
     // Post comment
     Route::get('user-post/comment','HomeController@userComment')->name('user.post-comment.index');
     Route::delete('user-post/comment/delete/{id}','HomeController@userCommentDelete')->name('user.post-comment.delete');
     Route::get('user-post/comment/edit/{id}','HomeController@userCommentEdit')->name('user.post-comment.edit');
     Route::patch('user-post/comment/udpate/{id}','HomeController@userCommentUpdate')->name('user.post-comment.update');
-    
+
     // Password Change
     Route::get('change-password', 'HomeController@changePassword')->name('user.change.password.form');
     Route::post('change-password', 'HomeController@changPasswordStore')->name('change.password');
