@@ -31,6 +31,8 @@ Route::get('login/{provider}/callback/', 'Auth\LoginController@Callback')->name(
 Route::get('/','FrontendController@home')->name('home');
 
 // Frontend Routes
+Route::get('request/{slug}','ReqController@productDetail')->name('product-detail');
+Route::get('/request', 'ReqController@index');
 Route::get('/home', 'FrontendController@index');
 Route::get('/about-us','FrontendController@aboutUs')->name('about-us');
 Route::get('/contact','FrontendController@contact')->name('contact');
@@ -49,6 +51,8 @@ Route::post('cart-update','CartController@cartUpdate')->name('cart.update');
 // Quick checkout
 Route::get('quick-checkout/{product_detail}','FrontendController@quickCheckout')->name('quick.checkout');
 Route::post('quick-checkout/{id}','FrontendController@paymentFaspay')->name('quick.checkout.process');
+// Route::post('quick-checkout/{id}/', 'FrontendController@quickCheckoutResponse');
+
 
 
 Route::get('/cart',function(){
