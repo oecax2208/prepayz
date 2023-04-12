@@ -29,7 +29,7 @@
 
                 <div class="col-lg-12 col-md-12 col-12">
                     <div>
-                        <h1>Quick Checkout Response</h1>
+                        <!-- <h1>Quick Checkout Response</h1> -->
 
                          {!! $string !!}
                     </div>
