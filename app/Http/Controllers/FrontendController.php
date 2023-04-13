@@ -369,31 +369,56 @@ class FrontendController extends Controller
 
     public function paymentFaspay(Request $request,$id){
 
-        $merchant_id = env('FP_CREDIT_MERCHANT_ID');
-        $password 	 = env('FP_CREDIT_PASSWORD');
-        $amount 	 = str_replace(",", "", $request->amount);
-        $transId     = date("YmdGis");
-        $orderId     = date("YmdGis");
-        $signature=sha1('##'.strtoupper($merchant_id).'##'.strtoupper($password).'##'.$orderId.'##'. $amount .'##'.$transId.'##');
-        $trxtype = "1";
-        // if ($stat=="A") {
-        //     $trxtype = '2';
-        // }elseif ($stat=="V") {
-        //     $trxtype = '10';
-        // }
+        $merchant_id    = env('FP_CREDIT_MERCHANT_ID');
+        $password 	    = env('FP_CREDIT_PASSWORD');
+        $amount 	    = str_replace(",", "", $request->amount);
+        $orderId        = date("YmdGis");
+        $date_md5       = md5(date("YmdGis"));
+        $uuid_random    = strtoupper(substr($date_md5,0,8)). '-' . strtoupper(substr($date_md5,8,4)) . '-4'. strtoupper(substr($date_md5,13,3)). '-'.substr(md5(uniqid()),0,4) . '-'. substr(md5(uniqid()),4,12);
+        $transId        = $uuid_random;
+        $signaturecc    = sha1('##'.strtoupper($merchant_id).'##'.strtoupper($password).'##'.$orderId.'##'. $amount .'##'.$transId.'##');
+        $trxtype        = "1";
+
         $post = array(
-            "PAYMENT_METHOD"	=> '1',
-            "TRANSACTIONTYPE"	=> $trxtype,
-            "MERCHANTID"		=> $merchant_id,
-            "TXN_PASSWORD"      => $password,
-            "MERCHANT_TRANID"	=> $orderId,
-            "TRANSACTIONID" 	=> $transId,
-            "AMOUNT"			=> $amount,
-            "RESPONSE_TYPE"		=> '3',
-            "DESCRIPTION"       => $request->description,
-            // "RETURN_URL"      => view('frontend.pages.quick_checkout_response', compact('string')),
-            "SIGNATURE"			=> $signature,
+            "TRANSACTIONTYPE"               => $trxtype,
+            "RESPONSE_TYPE"                 => '3',
+            "LANG"                          => 'ID',
+            "MERCHANTID"                    => $merchant_id,
+            "PAYMENT_METHOD"                => '1',
+            // "TXN_PASSWORD"                  => $password,
+            "MERCHANT_TRANID"               => $orderId,
+            "TRANSACTIONID" 	            => $transId,
+            "CURRENCYCODE"                  => 'IDR',
+            "AMOUNT"                        => $amount,
+            "CUSTNAME"                      => 'merhcant test CC',
+            "CUSTEMAIL"                     => 'testing@faspay.co.id',
+            "DESCRIPTION"                   => $request->description,
+            // "RETURN_URL"                    => redirect()->route('quick.checkout.pay'),
+            "SIGNATURE"                     => $signaturecc,
+            "BILLING_ADDRESS"               => 'Jl. pintu air raya',
+            "BILLING_ADDRESS_CITY"          => 'Jakarta',
+            "BILLING_ADDRESS_REGION"        => 'DKI Jakarta',
+            "BILLING_ADDRESS_STATE"         => 'DKI Jakarta',
+            "BILLING_ADDRESS_POSCODE"       => '10710',
+            "BILLING_ADDRESS_COUNTRY_CODE"  => 'ID',
+            "RECEIVER_NAME_FOR_SHIPPING"    => 'Faspay test',
+            "SHIPPING_ADDRESS"              => 'Jl. pintu air raya',
+            "SHIPPING_ADDRESS_CITY"         => 'Jakarta',
+            "SHIPPING_ADDRESS_REGION"       => 'DKI Jakarta',
+            "SHIPPING_ADDRESS_STATE"        => 'DKI Jakarta',
+            "SHIPPING_ADDRESS_POSCODE"      => '10710',
+            "SHIPPING_ADDRESS_COUNTRY_CODE" => 'ID',
+            "SHIPPINGCOST"                  => '0.00',
+            "PHONE_NO"                      => '0897867688989',
+            "MPARAM1"                       => '',
+            "MPARAM2"                       => '',
+            "PYMT_IND"                      => '',
+            // "TOKEN_TYPE"                    => '1',
+            "PYMT_CRITERIA"                 => '',
+            "PYMT_TOKEN"                    => '',
+
         );
+
         $string = '<form method="post" name="form" action="https://fpg.faspay.co.id/payment/api">';
         $string .= '@csrf'; // Add this line
         if ($post != null) {
@@ -407,7 +432,7 @@ class FrontendController extends Controller
         // echo $string;
         return view('frontend.pages.quick_checkout_response', compact('string'));
 
-        exit;
+        // exit;
 
     }
 

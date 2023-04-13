@@ -51,7 +51,7 @@ Route::post('cart-update','CartController@cartUpdate')->name('cart.update');
 // Quick checkout
 Route::get('quick-checkout/{product_detail}','FrontendController@quickCheckout')->name('quick.checkout');
 Route::post('quick-checkout/{id}','FrontendController@paymentFaspay')->name('quick.checkout.process');
-Route::post('quick-checkout/pay', 'FrontendController@quickCheckoutResponsePay');
+Route::post('quick-checkout/pay', 'FrontendController@quickCheckoutResponsePay')->name('quick.checkout.pay');
 
 
 
