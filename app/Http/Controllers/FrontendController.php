@@ -367,6 +367,158 @@ class FrontendController extends Controller
         return view('frontend.pages.quick-checkout', compact('product_detail'));
     }
 
+    public function paymentFaspayX(Request $request,$id){
+
+        // $merchant_id    = env('FP_CREDIT_MERCHANT_ID');
+        // $password 	    = env('FP_CREDIT_PASSWORD');
+        $amount 	    = str_replace(",", "", $request->amount);
+        $email          = 'ronipaslan4@gmail.com';
+        $orderId        = date("YmdGis");
+        $date_md5       = md5(date("YmdGis"));
+        $uuid_random    = strtoupper(substr($date_md5,0,8)). '' . strtoupper(substr($date_md5,8,4)) . '4'. strtoupper(substr($date_md5,13,3)). ''.substr(md5(uniqid()),0,4) . ''. substr(md5(uniqid()),4,12);
+        $transId        = $uuid_random;
+        // $signaturecc    = sha1('##'.strtoupper($merchant_id).'##'.strtoupper($password).'##'.$orderId.'##'. $amount .'##'.$transId.'##'.$email.'##');
+
+        // Konfigurasi koneksi ke API Faspay
+        $signaturecc=sha1('##'.strtoupper(env('FP_CREDIT_MERCHANT_ID')).'##'.strtoupper(env('FP_CREDIT_PASSWORD')).'##'.$orderId.'##'.$amount.'##'.$transId.'##');
+        $post = array(
+            "TRANSACTIONTYPE"      => '1',
+            "RESPONSE_TYPE"        => '3',
+            "MERCHANTID"           => env('FP_CREDIT_MERCHANT_ID'),
+            "PAYMENT_METHOD"       => '1',
+            "MERCHANT_TRANID"      => $orderId,
+            "TRANSACTIONID"        => $transId,
+            "AMOUNT"               => $amount,
+            "SIGNATURE"            => $signaturecc,
+            "CURRENCYCODE"                  => 'IDR',
+            "AMOUNT"                        => $amount,
+            "CUSTNAME"                      => 'Roni Paslan',
+            "CUSTEMAIL"                     => $email,
+            "DESCRIPTION"                   => 'transaski test',
+            "RETURN_URL"                    => '',
+            "BILLING_ADDRESS"               => 'Jl. pintu air raya',
+            "BILLING_ADDRESS_CITY"          => 'Jakarta',
+            "BILLING_ADDRESS_REGION"        => 'DKI Jakarta',
+            "BILLING_ADDRESS_STATE"         => 'DKI Jakarta',
+            "BILLING_ADDRESS_POSCODE"       => '10710',
+            "BILLING_ADDRESS_COUNTRY_CODE"  => 'ID',
+            "RECEIVER_NAME_FOR_SHIPPING"    => 'Faspay test',
+            "SHIPPING_ADDRESS"              => 'Jl. pintu air raya',
+            "SHIPPING_ADDRESS_CITY"         => 'Jakarta',
+            "SHIPPING_ADDRESS_REGION"       => 'DKI Jakarta',
+            "SHIPPING_ADDRESS_STATE"        => 'DKI Jakarta',
+            "SHIPPING_ADDRESS_POSCODE"      => '10710',
+            "SHIPPING_ADDRESS_COUNTRY_CODE" => 'ID',
+            "SHIPPINGCOST"                  => '0.00',
+            "PHONE_NO"                      => '0897867688989',
+            "MPARAM1"                       => '',
+            "MPARAM2"                       => '',
+            "PYMT_IND"                      => '',
+            "PYMT_CRITERIA"                 => '',
+            "PYMT_TOKEN"                    => '',
+        );
+
+        $post   = http_build_query($post);
+        $url    = "https://fpg.faspay.co.id/payment/api";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = curl_exec($ch);
+        print_r($result);
+        curl_close($ch);
+
+
+    }
+
+    public function paymentFaspayXXXX(Request $request,$id){
+
+        $merchant_id    = env('FP_CREDIT_MERCHANT_ID');
+        $password 	    = env('FP_CREDIT_PASSWORD');
+        $amount 	    = str_replace(",", "", $request->amount);
+        $email          = 'ronipaslan4@gmail.com';
+        $orderId        = date("YmdGis");
+        $date_md5       = md5(date("YmdGis"));
+        $uuid_random    = strtoupper(substr($date_md5,0,8)). '' . strtoupper(substr($date_md5,8,4)) . '4'. strtoupper(substr($date_md5,13,3)). ''.substr(md5(uniqid()),0,4) . ''. substr(md5(uniqid()),4,12);
+        $transId        = $uuid_random;
+        $signaturecc    = sha1('##'.strtoupper($merchant_id).'##'.strtoupper($password).'##'.$orderId.'##'. $amount .'##'.$transId.'##'.$email.'##');
+        // $d =[$orderId, $transId, $signaturecc];
+        // dd($d);
+        $trxtype        = "1";
+
+        // $transId = date("YmdGis");
+        // $signaturecc=sha1('##'.strtoupper('aggregator_tes').'##'.strtoupper('ejeussad').'##'.$tranid.'##1000.00##'.'0'.'##');
+
+        $post = array(
+        "TRANSACTIONTYPE"               => $trxtype,
+        "RESPONSE_TYPE"                 => '3',
+        "LANG"                          => '',
+        "MERCHANTID"                    => $merchant_id,
+        "PAYMENT_METHOD"                => '1',
+        // "TXN_PASSWORD"                  => $password,
+        "MERCHANT_TRANID"               => $transId,
+        "CURRENCYCODE"                  => 'IDR',
+        "AMOUNT"                        => $amount,
+        "CUSTNAME"                      => 'Roni Paslan',
+        "CUSTEMAIL"                     => $email,
+        "DESCRIPTION"                   => 'transaski test',
+        "RETURN_URL"                    => '',
+        "SIGNATURE"                     => $signaturecc,
+        "BILLING_ADDRESS"               => 'Jl. pintu air raya',
+        "BILLING_ADDRESS_CITY"          => 'Jakarta',
+        "BILLING_ADDRESS_REGION"        => 'DKI Jakarta',
+        "BILLING_ADDRESS_STATE"         => 'DKI Jakarta',
+        "BILLING_ADDRESS_POSCODE"       => '10710',
+        "BILLING_ADDRESS_COUNTRY_CODE"  => 'ID',
+        "RECEIVER_NAME_FOR_SHIPPING"    => 'Faspay test',
+        "SHIPPING_ADDRESS"              => 'Jl. pintu air raya',
+        "SHIPPING_ADDRESS_CITY"         => 'Jakarta',
+        "SHIPPING_ADDRESS_REGION"       => 'DKI Jakarta',
+        "SHIPPING_ADDRESS_STATE"        => 'DKI Jakarta',
+        "SHIPPING_ADDRESS_POSCODE"      => '10710',
+        "SHIPPING_ADDRESS_COUNTRY_CODE" => 'ID',
+        "SHIPPINGCOST"                  => '0.00',
+        "PHONE_NO"                      => '0897867688989',
+        "MPARAM1"                       => '',
+        "MPARAM2"                       => '',
+        "PYMT_IND"                      => '',
+        "PYMT_CRITERIA"                 => '',
+        "PYMT_TOKEN"                    => '',
+
+        /* ==== customize input card page ===== */
+        "style_merchant_name"         => 'black',
+        "style_order_summary"         => 'black',
+        "style_order_no"              => 'black',
+        "style_order_desc"            => 'black',
+        "style_amount"                => 'black',
+        "style_background_left"       => '#fff',
+        "style_button_cancel"         => 'grey',
+        "style_font_cancel"           => 'white',
+        /* ==== logo directly to your url source ==== */
+        "style_image_url"           => 'http://url_merchant/image.png',
+        );
+
+        //Dev ke = https://fpgdev.faspay.co.id/payment
+        $string = '<form method="post" name="form" action="https://fpg.faspay.co.id/payment/api">';
+        if ($post != null) {
+        foreach ($post as $name=>$value) {
+        $string .= '<input type="hidden" name="'.$name.'" value="'.$value.'">';
+            }
+        }
+
+        $string .= '</form>';
+        $string .= '<script> document.form.submit();</script>';
+        echo $string;
+        exit;
+    }
+
     public function paymentFaspay(Request $request,$id){
 
         $merchant_id    = env('FP_CREDIT_MERCHANT_ID');
@@ -377,6 +529,8 @@ class FrontendController extends Controller
         $uuid_random    = strtoupper(substr($date_md5,0,8)). '-' . strtoupper(substr($date_md5,8,4)) . '-4'. strtoupper(substr($date_md5,13,3)). '-'.substr(md5(uniqid()),0,4) . '-'. substr(md5(uniqid()),4,12);
         $transId        = $uuid_random;
         $signaturecc    = sha1('##'.strtoupper($merchant_id).'##'.strtoupper($password).'##'.$orderId.'##'. $amount .'##'.$transId.'##');
+        // $d =[$orderId, $transId, $signaturecc];
+        // dd($d);
         $trxtype        = "1";
 
         $post = array(

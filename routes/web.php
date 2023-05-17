@@ -50,8 +50,12 @@ Route::post('cart-update','CartController@cartUpdate')->name('cart.update');
 
 // Quick checkout
 Route::get('quick-checkout/{product_detail}','FrontendController@quickCheckout')->name('quick.checkout');
+Route::post('notify', 'FrontendController@quickCheckoutResponsePay')->name('quick.checkout.notify');
+Route::get('notify', 'FrontendController@quickCheckoutResponsePay')->name('quick.checkout.notify');
+//Route::get('callback', 'FrontendController@callbackResponsePay')->name('quick.checkout.callback');
+//Route::get('quick-checkout/pay', 'FrontendController@quickCheckoutResponsePay')->name('quick.checkout.pay');
+//Route::get('quick-checkout/notifier', 'FrontendController@notifier')->name('quick.checkout.notifier');
 Route::post('quick-checkout/{id}','FrontendController@paymentFaspay')->name('quick.checkout.process');
-Route::post('quick-checkout/pay', 'FrontendController@quickCheckoutResponsePay')->name('quick.checkout.pay');
 
 
 
